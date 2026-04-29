@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Mediacraft Studios – Kalpetta</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --w: 390px;
+    --h: 844px;
+    --gold: #FFD060;
+    --electric: #00EEFF;
+    --deep: #050510;
+    --mid: #0D0D2B;
+    --accent: #FF3CAC;
+    --white: #F0F0FF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    min-height: 100vh;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  .phone-wrap {
+    width: min(100vw, var(--w));
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    background: var(--deep);
+  }
+
+  /* ── ANIMATED BG GRID ── */
+  .bg-grid {
+    position: fixed;
+    top: 0; left: 50%; transform: translateX(-50%);
+    width: min(100vw, var(--w));
+    height: 100vh;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .bg-grid::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,238,255,.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,238,255,.07) 1px, transparent 1px);
+    background-size: 36px 36px;
+    animation: gridDrift 20s linear infinite;
+  }
+  @keyframes gridDrift { from { transform: translateY(0); } to { transform: translateY(36px); } }
+
+  /* ── ORBS ── */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: .35;
+    pointer-events: none;
+    z-index: 0;
+    left: 50%; transform: translateX(-50%);
+  }
+  .orb1 { width: 280px; height: 280px; background: var(--accent); top: -60px; margin-left: -100px; animation: orbFloat1 8s ease-in-out infinite; }
+  .orb2 { width: 220px; height: 220px; background: var(--electric); top: 40%; margin-left: 60px; animation: orbFloat2 10s ease-in-out infinite; }
+  .orb3 { width: 180px; height: 180px; background: var(--gold); bottom: 10%; margin-left: -120px; animation: orbFloat3 12s ease-in-out infinite; }
+  @keyframes orbFloat1 { 0%,100%{transform:translateX(-50%) translateY(0) scale(1);} 50%{transform:translateX(-50%) translateY(30px) scale(1.1);} }
+  @keyframes orbFloat2 { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(-40px);} }
+  @keyframes orbFloat3 { 0%,100%{transform:translateX(-50%) translateY(0) scale(1);} 50%{transform:translateX(-50%) translateY(20px) scale(1.05);} }
+
+  /* ── NOISE OVERLAY ── */
+  .noise {
+    position: fixed;
+    top: 0; left: 50%; transform: translateX(-50%);
+    width: min(100vw, var(--w)); height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+    opacity: .04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+
+  /* ── SCROLLABLE CONTENT ── */
+  .content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 60px;
+  }
+
+  /* ══ HERO ══ */
+  .hero {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px 60px;
+    position: relative;
+  }
+
+  .hero-badge {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(0,238,255,.1);
+    border: 1px solid rgba(0,238,255,.3);
+    border-radius: 100px;
+    padding: 6px 16px;
+    margin-bottom: 28px;
+    animation: fadeSlideDown .8s ease both;
+  }
+  .badge-dot {
+    width: 7px; height: 7px;
+    background: var(--electric);
+    border-radius: 50%;
+    animation: pulse 1.5s ease-in-out infinite;
+    box-shadow: 0 0 8px var(--electric);
+  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+  .badge-text {
+    font-size: 11px; letter-spacing: .15em; text-transform: uppercase;
+    color: var(--electric); font-weight: 400;
+  }
+
+  .logo-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    margin-bottom: 8px;
+    animation: fadeSlideUp .9s .15s ease both;
+  }
+  .logo-m {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 88px;
+    line-height: .85;
+    background: linear-gradient(135deg, #fff 30%, var(--electric) 70%, var(--accent) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 30px rgba(0,238,255,.4));
+    letter-spacing: -.02em;
+  }
+  .logo-sub {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: .35em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-top: -4px;
+  }
+  .logo-craft {
+    color: var(--gold);
+  }
+
+  .location-tag {
+    font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+    color: rgba(240,240,255,.45);
+    margin-bottom: 36px;
+    animation: fadeSlideUp .9s .25s ease both;
+  }
+  .location-tag span { color: var(--gold); }
+
+  /* ── HERO DIVIDER ── */
+  .divider {
+    width: 60px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--electric), transparent);
+    margin-bottom: 28px;
+    animation: fadeSlideUp .9s .3s ease both;
+  }
+
+  .hero-tagline {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; font-style: italic; font-weight: 300;
+    color: rgba(240,240,255,.6);
+    text-align: center;
+    max-width: 280px;
+    line-height: 1.6;
+    margin-bottom: 48px;
+    animation: fadeSlideUp .9s .35s ease both;
+  }
+
+  .scroll-hint {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    animation: fadeSlideUp 1s .6s ease both;
+  }
+  .scroll-text { font-size: 10px; letter-spacing: .2em; text-transform: uppercase; color: rgba(255,255,255,.3); }
+  .scroll-arrow {
+    width: 20px; height: 20px;
+    border-right: 2px solid rgba(255,255,255,.25);
+    border-bottom: 2px solid rgba(255,255,255,.25);
+    transform: rotate(45deg);
+    animation: bounce 2s ease-in-out infinite;
+  }
+  @keyframes bounce { 0%,100%{transform:rotate(45deg) translateY(0);} 50%{transform:rotate(45deg) translateY(6px);} }
+
+  /* ══ SECTION LABEL ══ */
+  .section-label {
+    font-size: 10px; letter-spacing: .25em; text-transform: uppercase;
+    color: var(--electric); margin-bottom: 14px;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .section-label.vis { opacity: 1; transform: none; }
+  .section-title {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 30px; color: var(--white);
+    line-height: 1.15; margin-bottom: 8px;
+    opacity: 0; transform: translateY(24px);
+    transition: opacity .6s .1s ease, transform .6s .1s ease;
+  }
+  .section-title.vis { opacity: 1; transform: none; }
+  .section-title span { color: var(--gold); }
+
+  /* ══ SERVICES ══ */
+  .services-section {
+    width: 100%;
+    padding: 60px 20px;
+  }
+  .services-header { margin-bottom: 32px; }
+
+  .service-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .service-card {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 16px;
+    padding: 18px 14px;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+    opacity: 0; transform: translateY(30px) scale(.97);
+    transition: opacity .5s ease, transform .5s ease, border-color .3s, background .3s;
+  }
+  .service-card.vis { opacity: 1; transform: none; }
+  .service-card:nth-child(2) { transition-delay: .08s; }
+  .service-card:nth-child(3) { transition-delay: .16s; }
+  .service-card:nth-child(4) { transition-delay: .24s; }
+  .service-card:nth-child(5) { transition-delay: .32s; }
+  .service-card:nth-child(6) { transition-delay: .40s; }
+
+  .service-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,238,255,.06), rgba(255,60,172,.04));
+    opacity: 0; transition: opacity .3s;
+  }
+  .service-card:active::before { opacity: 1; }
+
+  .service-card .glow-line {
+    position: absolute; top: 0; left: 16px; right: 16px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--electric), transparent);
+    opacity: 0; transition: opacity .3s;
+  }
+  .service-card:active .glow-line { opacity: 1; }
+
+  .service-icon {
+    font-size: 26px; margin-bottom: 10px; display: block;
+    filter: drop-shadow(0 0 8px rgba(0,238,255,.5));
+  }
+  .service-name {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 13px;
+    color: var(--white); line-height: 1.3;
+  }
+  .service-desc {
+    font-size: 10.5px; color: rgba(240,240,255,.4);
+    margin-top: 4px; line-height: 1.5;
+  }
+
+  /* Wide card */
+  .service-card.wide {
+    grid-column: 1 / -1;
+  }
+
+  /* ══ HIGHLIGHT STRIP ══ */
+  .highlight-strip {
+    width: 100%;
+    margin: 0;
+    padding: 36px 20px;
+    background: linear-gradient(135deg, rgba(255,208,96,.08), rgba(0,238,255,.05));
+    border-top: 1px solid rgba(255,208,96,.15);
+    border-bottom: 1px solid rgba(255,208,96,.15);
+    display: flex; flex-direction: column; align-items: center; gap: 24px;
+    opacity: 0; transform: translateY(30px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .highlight-strip.vis { opacity: 1; transform: none; }
+
+  .stat-row { display: flex; gap: 32px; align-items: center; }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif; font-size: 42px;
+    background: linear-gradient(135deg, var(--gold), var(--electric));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    line-height: 1;
+  }
+  .stat-label { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: rgba(240,240,255,.45); margin-top: 2px; }
+
+  /* ══ CTA ══ */
+  .cta-section {
+    width: 100%;
+    padding: 60px 24px 40px;
+    display: flex; flex-direction: column; align-items: center;
+    text-align: center;
+  }
+
+  .cta-title {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 32px; color: var(--white); line-height: 1.1;
+    margin-bottom: 12px;
+    opacity: 0; transform: translateY(24px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .cta-title.vis { opacity: 1; transform: none; }
+  .cta-title span { color: var(--gold); }
+
+  .cta-sub {
+    font-size: 14px; color: rgba(240,240,255,.5);
+    margin-bottom: 36px; line-height: 1.6;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity .6s .1s ease, transform .6s .1s ease;
+  }
+  .cta-sub.vis { opacity: 1; transform: none; }
+
+  /* WhatsApp button */
+  .wa-btn {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    width: 100%;
+    max-width: 320px;
+    padding: 18px 28px;
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    border-radius: 100px;
+    text-decoration: none;
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 16px;
+    letter-spacing: .04em;
+    box-shadow: 0 8px 40px rgba(37,211,102,.35), 0 0 0 0 rgba(37,211,102,.4);
+    animation: waPulse 2.5s ease-in-out infinite;
+    position: relative; overflow: hidden;
+    opacity: 0; transform: translateY(24px) scale(.95);
+    transition: opacity .6s .2s ease, transform .6s .2s ease;
+  }
+  .wa-btn.vis { opacity: 1; transform: none; }
+
+  .wa-btn::before {
+    content: '';
+    position: absolute; top: -50%; left: -60%; width: 40%; height: 200%;
+    background: rgba(255,255,255,.2);
+    transform: skewX(-20deg);
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  @keyframes shimmer { 0%{left:-60%;} 100%{left:160%;} }
+  @keyframes waPulse { 0%,100%{box-shadow:0 8px 40px rgba(37,211,102,.35),0 0 0 0 rgba(37,211,102,.4);} 50%{box-shadow:0 8px 40px rgba(37,211,102,.45),0 0 0 10px rgba(37,211,102,.0);} }
+
+  .wa-icon {
+    width: 26px; height: 26px;
+    background: rgba(255,255,255,.2);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+  }
+
+  .wa-text-wrap { display: flex; flex-direction: column; align-items: flex-start; }
+  .wa-main { font-size: 16px; }
+  .wa-num { font-size: 11px; font-weight: 400; opacity: .8; letter-spacing: .05em; }
+
+  /* Phone number secondary */
+  .phone-link {
+    margin-top: 16px;
+    font-size: 13px;
+    color: rgba(240,240,255,.35);
+    text-decoration: none;
+    letter-spacing: .05em;
+    opacity: 0; transition: opacity .5s .4s ease;
+  }
+  .phone-link.vis { opacity: 1; }
+
+  /* ══ FOOTER ══ */
+  .footer {
+    width: 100%;
+    padding: 28px 24px;
+    border-top: 1px solid rgba(255,255,255,.07);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    text-align: center;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+    background: linear-gradient(135deg, var(--white), rgba(240,240,255,.4));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: .1em;
+  }
+  .footer-copy { font-size: 10px; color: rgba(240,240,255,.2); letter-spacing: .1em; }
+
+  /* ══ KEYFRAMES ══ */
+  @keyframes fadeSlideDown { from{opacity:0;transform:translateY(-20px);} to{opacity:1;transform:none;} }
+  @keyframes fadeSlideUp { from{opacity:0;transform:translateY(30px);} to{opacity:1;transform:none;} }
+
+  /* Floating particles */
+  .particles { position: fixed; top:0; left:50%; transform:translateX(-50%); width:min(100vw,var(--w)); height:100vh; z-index:1; pointer-events:none; overflow:hidden; }
+  .p { position:absolute; border-radius:50%; animation: pFloat linear infinite; }
+  @keyframes pFloat { 0%{opacity:0;transform:translateY(100vh) scale(0);} 10%{opacity:1;} 90%{opacity:.6;} 100%{opacity:0;transform:translateY(-20px) scale(1);} }
+
+  /* Scanning line */
+  .scan-line {
+    position: fixed;
+    top: 0; left: 50%; transform: translateX(-50%);
+    width: min(100vw, var(--w));
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,238,255,.6), transparent);
+    z-index: 3;
+    animation: scan 5s linear infinite;
+    pointer-events: none;
+  }
+  @keyframes scan { 0%{top:-2px;} 100%{top:100vh;} }
+</style>
+</head>
+<body>
+
+<!-- Background layers -->
+<div class="bg-grid"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+<div class="noise"></div>
+<div class="scan-line"></div>
+
+<!-- Floating particles -->
+<div class="particles" id="particles"></div>
+
+<div class="phone-wrap">
+  <div class="content">
+
+    <!-- ── HERO ── -->
+    <section class="hero">
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        <span class="badge-text">Kalpetta · Wayanad</span>
+      </div>
+
+      <div class="logo-wrap">
+        <div class="logo-m">MC</div>
+        <div class="logo-sub"><span class="logo-craft">Media</span>craft</div>
+        <div class="logo-sub" style="letter-spacing:.2em;font-size:14px;color:rgba(240,240,255,.5);font-weight:400;margin-top:4px;">STUDIOS</div>
+      </div>
+
+      <div class="location-tag">📍 <span>Kalpetta</span>, Wayanad</div>
+      <div class="divider"></div>
+
+      <p class="hero-tagline">We craft brands that move, stories that convert & content that captivates.</p>
+
+      <div class="scroll-hint">
+        <span class="scroll-text">Explore</span>
+        <div class="scroll-arrow"></div>
+      </div>
+    </section>
+
+    <!-- ── SERVICES ── -->
+    <section class="services-section">
+      <div class="services-header">
+        <p class="section-label obs">What We Do</p>
+        <h2 class="section-title obs">Our <span>Services</span></h2>
+      </div>
+
+      <div class="service-grid">
+
+        <div class="service-card obs">
+          <div class="glow-line"></div>
+          <span class="service-icon">📈</span>
+          <div class="service-name">Digital Marketing</div>
+          <div class="service-desc">SEO, strategy & campaigns that grow your brand online</div>
+        </div>
+
+        <div class="service-card obs">
+          <div class="glow-line"></div>
+          <span class="service-icon">📱</span>
+          <div class="service-name">Social Media Handling</div>
+          <div class="service-desc">Full management of your social presence</div>
+        </div>
+
+        <div class="service-card obs">
+          <div class="glow-line"></div>
+          <span class="service-icon">🎯</span>
+          <div class="service-name">Meta Ads</div>
+          <div class="service-desc">High-ROAS Facebook & Instagram ad campaigns</div>
+        </div>
+
+        <div class="service-card obs">
+          <div class="glow-line"></div>
+          <span class="service-icon">🎬</span>
+          <div class="service-name">Video Shooting</div>
+          <div class="service-desc">Professional shoots for brand storytelling</div>
+        </div>
+
+        <div class="service-card obs">
+          <div class="glow-line"></div>
+          <span class="service-icon">📽️</span>
+          <div class="service-name">Business Video Ads</div>
+          <div class="service-desc">Cinematic ads that convert viewers to customers</div>
+        </div>
+
+        <div class="service-card obs">
+          <div class="glow-line"></div>
+          <span class="service-icon">🎨</span>
+          <div class="service-name">Creative Posters</div>
+          <div class="service-desc">Scroll-stopping visuals for every platform</div>
+        </div>
+
+        <div class="service-card wide obs">
+          <div class="glow-line"></div>
+          <span class="service-icon">💬</span>
+          <div class="service-name">WhatsApp Automation</div>
+          <div class="service-desc">Automated customer journeys, broadcasts & chatbots that work 24/7 for your business</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── HIGHLIGHT STRIP ── -->
+    <div class="highlight-strip obs">
+      <div class="stat-row">
+        <div class="stat"><div class="stat-num">100+</div><div class="stat-label">Clients</div></div>
+        <div class="stat"><div class="stat-num">5★</div><div class="stat-label">Rated</div></div>
+        <div class="stat"><div class="stat-num">3+</div><div class="stat-label">Years</div></div>
+      </div>
+      <p style="font-size:13px;color:rgba(240,240,255,.45);text-align:center;line-height:1.6;max-width:280px;">Trusted by businesses across Wayanad & beyond to grow their digital presence.</p>
+    </div>
+
+    <!-- ── CTA ── -->
+    <section class="cta-section">
+      <h2 class="cta-title obs">Ready to <span>grow</span><br>your brand?</h2>
+      <p class="cta-sub obs">Drop us a WhatsApp — let's talk about what we can build together.</p>
+
+      <a class="wa-btn obs" href="https://wa.me/919605668712?text=Hi%20Mediacraft%20Studios!%20I%27d%20like%20to%20know%20more%20about%20your%20services." target="_blank" rel="noopener">
+        <div class="wa-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+        </div>
+        <div class="wa-text-wrap">
+          <span class="wa-main">Chat on WhatsApp</span>
+          <span class="wa-num">+91 96056 68712</span>
+        </div>
+      </a>
+
+      <a class="phone-link obs" href="tel:+919605668712">📞 +91 96056 68712</a>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer class="footer">
+      <div class="footer-logo">MEDIACRAFT STUDIOS</div>
+      <div class="footer-copy">© 2025 · Kalpetta, Wayanad · All Rights Reserved</div>
+    </footer>
+
+  </div><!-- .content -->
+</div><!-- .phone-wrap -->
+
+<script>
+// ── Particle generator
+const pWrap = document.getElementById('particles');
+const colors = ['#00EEFF','#FF3CAC','#FFD060','#ffffff'];
+for(let i=0;i<18;i++){
+  const p = document.createElement('div');
+  p.className='p';
+  const size = Math.random()*4+2;
+  const color = colors[Math.floor(Math.random()*colors.length)];
+  p.style.cssText=`
+    width:${size}px;height:${size}px;
+    background:${color};
+    left:${Math.random()*100}%;
+    animation-duration:${Math.random()*8+6}s;
+    animation-delay:${Math.random()*8}s;
+    opacity:0;
+    box-shadow:0 0 6px ${color};
+  `;
+  pWrap.appendChild(p);
+}
+
+// ── Intersection Observer for scroll animations
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('vis');
+      // stagger children if service grid
+      if(e.target.classList.contains('service-card')) return;
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.obs').forEach(el=>obs.observe(el));
+
+// ── Stagger service cards
+const cards = document.querySelectorAll('.service-card');
+const cardObs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting) e.target.classList.add('vis');
+  });
+}, { threshold: 0.1 });
+cards.forEach(c=>cardObs.observe(c));
+</script>
+</body>
+</html>
